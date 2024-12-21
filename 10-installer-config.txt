@@ -1,0 +1,213 @@
+# This is the network config written by 'subiquity'
+network:
+   ethernets:
+      ens3:
+	dhcp4: true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+rm -rf <namefile> - удаляет файл
+
+history -c - очищает историю
+
+1-DHCP: Скачивается пакет через команду apt install isc-dhcp-server
+Затем необходимо перейти по пути: nano /etc/default/isc-dhcp-server
+Настроить интерфейс через netplan 
+Затем нужно внести изменения в конфигурационном файле по пути: nano /etc/dhcpd/dhcpd.conf
+> systemctl restart isc-dhcp-server
+> Перезагрузка второй рабочей станции
+
+:: Нужно в файле конфигурации dhcp поменять строчку на option domain-name-servers 8.8.8.8 8.8.4.4;
+
+2-Samba: Установка пакета самба apt install samba
+> Перейти в файл конфигурации nano /etc/samba/smb.conf и добавить в конце:
+	[SharedFolder]
+	path = /srv/samba/shared
+	browseable = yes
+	read only = no
+	guest ok = no
+	valid users = @sambashare
+> После создается общая папка и выдаются права доступа следующими командами: 
+	mkdir -p /srv/samba/shared
+	sudo chown -R root:sambashare /srv/samba/shared
+	sudo chmod -R 2770 /srv/samba/shared
+И создается группа пользователей:
+	sudo groupadd sambashare
+Затем создается и сам пользователь: 
+	sudo adduser <name>
+Добавляется пользователь в созданную группу:
+	sudo usermod -aG sambashare username
+И создается пароль и активируется пользователь:
+	sudo smbpasswd -a username
+	sudo smbpasswd -e username
+Затем запускается самба:
+	systemctl restart smbd
+На клиентском устройстве включается интернет и скачивается пакет, а также подключается к серверу.
+	sudo apt install smbclient -y
+	smbclient //192.168.1.100/SharedFolder -U username
+
+3- Настройка DNS сервера
+apt install bind9
+> cd /etc/bind/
+> nano named.conf.local
+> zone "<name>.ru" {
+    type master;
+    file "/etc/bind/db.<name>.ru";
+};
+
+>mkdir zones
+>cp db.255 /etc/bind/zones/db.<name>.ru
+
+> $TTL    604800
+@       IN      SOA     ns1.<name>.ru. admin.<name>.ru. (
+                         2024122001 ; Serial
+                         604800     ; Refresh
+                         86400      ; Retry
+                         2419200    ; Expire
+                         604800 )   ; Negative Cache TTL
+;
+@       IN      NS      <name>.ru.
+ns1     IN      A       192.168.1.1
+@       IN      A       192.168.1.1
+www     IN      A       192.168.1.1
+
+> systemctl restart bind9, А до этого нужно прописать DNS сервер для клиента
+> named-checkzone <name>.ru /etc/bind/zone/<name>.ru
+> named-checkconf
+> На клиенте: dig @192.168.1.1 work-group.ru
+
+4- Создание Backup скрипта:
+> nano /home/user/backup.sh
+
+> 
+#!/bin/bash
+
+# Исходная папка или файл для резервного копирования
+SOURCE="/etc/netplan/"
+
+# Папка для хранения резервных копий
+BACKUP_DIR="/home/user/backup"
+
+# Имя файла резервной копии с меткой времени
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+BACKUP_NAME="backup_$TIMESTAMP.tar.gz"
+
+# Создание резервной копии
+mkdir -p "$BACKUP_DIR"
+tar -czf "$BACKUP_DIR/$BACKUP_NAME" "$SOURCE"
+
+# Логирование
+echo "[$(date +"%Y-%m-%d %H:%M:%S")] Backup created: $BACKUP_DIR/$BACKUP_NAME" >> /var/log/backup.log
+
+>chmod +x /home/user/backup.sh
+> sudo /home/user/backup.sh - Проверка работы
+> crontab -e
+> Написать в файл 0 2 * * * /home/user/backup.sh
+> crontab -l
+
+5- Работа с crontab
+> crontab -e {1}
+> 0 3 * * * sudo apt update && sudo apt upgrade -y >> /var/log/apt-upgrade.log 2>&1 - обновление системы в 3 утра
+> 0 4 * * * sudo rm -rf /tmp/* >> /var/log/tmp-cleanup.log 2>&1 - Очистка временых файлов каждое утро в 4 часа
+> */10 * * * * df -h > /var/log/disk-usage.log - Мониторинг свободного места каждые 10 минут.
+> crontab -l  - проверка работы
+
+6- Настройка скрипта для отправки письма
+> apt install postfix -y
+> apt install mailutils
+> echo "Test email from crontab" | mail -s "Test Email" your_email@example.com
+> sudo nano /home/user/mail.sh
+> #!/bin/bash
+
+# Файл отчёта
+REPORT_FILE="/tmp/task_report.txt"
+
+# Создание простого отчёта
+echo "Отчёт по выполненным задачам:" > "$REPORT_FILE"
+echo "Дата: $(date)" >> "$REPORT_FILE"
+echo "Свободное место на диске:" >> "$REPORT_FILE"
+df -h >> "$REPORT_FILE"
+
+# Отправка отчёта на email
+mail -s "Еженедельный отчёт" your_email@example.com < "$REPORT_FILE"
+
+
+> sudo chmod +x /home/user/mail.sh
+> crontab -e
+> */10 * * * * /home/user/mail.sh - каждые 10 минут 
+> crontab -l 
+
+
+7- Настройка SAMBA с папкой только для чтения:
+> apt install samba
+> nano /srv/samba/test/lipton
+> sudo chmod 755 /srv/samba/test
+> sudo chown root:root (root:smbusers) /srv/samba/test
+> groupadd smbusers
+> useradd chill
+> passwd chill
+> usermod -aG smbusers chill
+> smbpasswd -a chill
+> smbpasswd -e chill
+> sudo nano /etc/samba/smb.conf
+> [ReadOnlyShare]
+path = /srv/samba/read_only_share
+browseable = yes
+read only = yes
+valid users = @smbusers
+> testparm
+> systemctl restart smbd
+> На клинте: 
+	> apt install smbcliet
+	> smbclient //192.168.1.1/ReadOnlyShare -U chill
+> ls
+
+8- Настройка DHCP севера: 
+> apt install isc-dhcp-server
+> nano tc/default/isc-dhcp-server
+> nano /etc/netplan/00-installer-config.yaml
+> nano /etc/dhcp/dhcpd.conf
+> subnet 192.168.1.0 netmask 255.255.255.0 {
+    range 192.168.1.10 192.168.1.20; # Диапазон выдачи IP
+    option routers 192.168.1.1;        # IP-адрес шлюза
+}
+ 
+> host client1 {
+    hardware ethernet 00:11:22:33:44:55;
+    fixed-address 192.168.1.101;
+}
+
+> systemctl restart isc-dhp-server
+
