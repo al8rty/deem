@@ -38,6 +38,13 @@ network:
 
 
 
+
+
+
+
+
+
+
 rm -rf <namefile> - удаляет файл
 
 history -c - очищает историю
