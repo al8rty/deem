@@ -1,4 +1,28 @@
-
+#dhcpd.conf
+# Sample configuration file for ISC dhcpd
+# Attention: If /etc/1tsp/dhcpd.conf exists, that will be used as 
+# configuration file instead of this file. #
+# option definitions common to all supported networks… 
+option domain-name " example.org "; 
+option domain-name-servers ns1.example.org , ns2.example.org ;
+default-lease-time 600; max-lease-time 7200;
+# The ddns-updates-style parameter controls whether or not the server will 
+# attempt to do a DNS update when a lease is confirmed. We default to the 
+# behavior of the version 2 packages ('none', since DHCP v2 didn't # have support for DDNS.)
+ddns-update-style none;
+# If this DHCP server is the official DHCP server for the local 
+# network, the authoritative directive should be uncommented.
+#authoritative;
+# Use this to send dhcp log messages to a different log file (you also
+# have to hack syslog.conf to complete the redirection). 
+#log-facility loca17;
+# No service will be given on this subnet, but declaring it helps the 
+# DHCP server to understand the network topology.
+#subnet 10.152.187.0 netmask 255.255.255.0 { #3
+# This is a very basic subnet declaration.
+#subnet 10.254.239.0 netmask 255.255.255.224 ( range 10.254.239.10 10.254.239.20;
+# # option routers rtr-239-0-1.example.org , rtr-239-0-2.example.org ; #
+# # which we don't really recommend.
 
 
 
