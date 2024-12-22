@@ -138,6 +138,8 @@ tar -czf "$BACKUP_DIR/$BACKUP_NAME" "$SOURCE"
 # Логирование
 echo "[$(date +"%Y-%m-%d %H:%M:%S")] Backup created: $BACKUP_DIR/$BACKUP_NAME" >> /var/log/backup.log
 
+> apt install dos2unix
+> dos2unix /путькфайлу
 >chmod +x /home/user/backup.sh
 > sudo /home/user/backup.sh - Проверка работы
 > crontab -e
