@@ -1,0 +1,13 @@
+#!/bin/bash
+
+
+REPORT_FILE="/tmp/task_report.txt"
+
+
+echo "Отчёт по выполненным задачам:" > "$REPORT_FILE"
+echo "Дата: $(date)" >> "$REPORT_FILE"
+echo "Свободное место на диске:" >> "$REPORT_FILE"
+df -h >> "$REPORT_FILE"
+
+
+mail -s "Еженедельный отчёт" your_email@example.com < "$REPORT_FILE"
