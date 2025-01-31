@@ -47,7 +47,7 @@ def setup_zones():
         os.makedirs(zones_dir)
 
         zones_file = {
-            "db.work-group.ru": "https://raw.githubusercontent.com/al8rty/bind9/main/db.work-group.ru",
+            "db.au-team.irpo": "https://raw.githubusercontent.com/al8rty/bind9/main/db.au-team.irpo",
             "db.192.0.2": "https://raw.githubusercontent.com/al8rty/bind9/main/db.192.0.2"
         }
 
