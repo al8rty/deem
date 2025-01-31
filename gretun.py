@@ -3,6 +3,7 @@ import subprocess
 import sys
 import paramiko
 import time
+import shutil
 
 HQ_IP = "172.16.4.2"
 HQ_USER = "root"
