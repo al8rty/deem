@@ -26,13 +26,13 @@ def install_required_packages():
 
     if not shutil.which("python3"):
         print("Python3 don't founded, installing...")
-        subprocess.run("sudo apt update && sudo apt install -y python3", shell=True)
+        subprocess.run("sudo apt update && sudo apt install -y python3", shell=True, check=True)
     else:
         print("Python3 already installed")
 
     if not shutil.which("pip3"):
         print("pip don't founded, installing...")
-        subprocess.run("sudo apt install -y python3-pip", shell=True)
+        subprocess.run("sudo apt install -y python3-pip", shell=True, check=True)
     else:
         print("pip already installed")
 
@@ -41,7 +41,8 @@ def install_required_packages():
         print("paramiko already installed")
     except ImportError:
         print("paramiko don't founded, installing...")
-        subprocess.run("pip3 install paramiko", shell=True)
+        subprocess.run("pip3 install paramiko", shell=True, check=True)
+        import paramiko
 
 def execute_local(commands):
     print("\n Setting GRE-tunn on br-rtr (local)...\n")
