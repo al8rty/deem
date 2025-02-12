@@ -46,7 +46,6 @@ def setup_zones():
     
     zones_files = {
         "db.au-team.irpo": "https://raw.githubusercontent.com/al8rty/bind9/main/db.au-team.irpo",
-        "db.192.0.2": "https://raw.githubusercontent.com/al8rty/bind9/main/db.192.0.2",
         "db.192.168.2": "https://raw.githubusercontent.com/al8rty/bind9/main/db.192.168.2",
         "db.192.168.1": "https://raw.githubusercontent.com/al8rty/bind9/main/db.192.168.1",
         "db.172.16.4": "https://raw.githubusercontent.com/al8rty/bind9/main/db.172.16.4",
