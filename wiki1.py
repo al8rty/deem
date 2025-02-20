@@ -16,9 +16,9 @@ def install_package(pkg_name):
 def print_version(command, name):
     try:
         result = subprocess.check_output(command, shell=True, text=True).strip()
-        print(colored(f"{name} install: {result}", "red"))
+        print(f"{name} install: {result}")
     except subprocess.CalledProcessError:
-        print(colored(f"Error {name}!", "red"))
+        print(f"Error {name}!")
 
 if not is_installed("docker.io"):
     install_package("docker.io")
@@ -45,7 +45,7 @@ try:
         file.write(response.text)
     print("File wiki.yml successfuly install!")
 except requests.RequestException as e:
-    print(colored(f"Error install wiki.yml: {e}", "red"))
+    print(f"Error install wiki.yml: {e}")
     exit(1)
 
 os.chdir(home_dir)
