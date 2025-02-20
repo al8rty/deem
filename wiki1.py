@@ -1,7 +1,6 @@
 import os
 import subprocess
 import requests
-from termcolor import colored
 
 def is_installed(pkg_name):
     try:
