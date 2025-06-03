@@ -1,49 +1,6 @@
-Правильная настройка OSPF: на всех устройствах, установить frr и включить  daemons ospf.
-На hq-rtr: 
-  > включить все интерфейсы всех подсетей;
-  > interface tun1
-  > ip ospf authentication
-  > ip ospf authentication-key password
-  > interface ens3
-  > ip ospf authentication-key password
-router ospf
- network 10.10.0.0/30 area 0    ; сеть туннеля
- network 172.16.4.0/28 area 0   ; сеть к ISP
- network 192.168.1.0/26 area 0  ; ваша внутренняя сеть (пример)
- network 172.16.16.0/28 area 0  ; другая внутренняя сеть (пример)
- passive-interface default
- no passive-interface tun0
- no passive-interface ens3
-exit
-write
+.Правильная настройка OSPF: на всех устройствах, установить frr и включить daemons ospf.
 
-На br-rtr:
-  > аналогично включить все интерфейсы;
-  > interface tun1
-  > ip ospf authentication
-  > ip ospf authentication-key mypassword  ; тот же пароль
-  > interface ens3
-  > ip ospf authentication-key mypassword
-router ospf
- network 10.10.0.0/30 area 0    ; сеть туннеля
- network 172.16.5.0/28 area 0   ; сеть к ISP
- network 192.168.2.0/27 area 0  ; ваша внутренняя сеть (пример)
- passive-interface default
- no passive-interface tun0
- no passive-interface ens3
-exit
-write
-
-На ISP:
-router ospf
- no network 10.10.0.0/30 area 0
- network 172.16.4.0/28 area 0
- network 172.16.5.0/28 area 0
- passive-interface default
- no passive-interface ens3  ; интерфейс к hq-rtr
- no passive-interface ens4  ; интерфейс к br-rtr (проверьте имя интерфейса)
-exit
-write
+По стандарту нужно произвести добавление каждого ip адреса на каждый маршрутизатор, предварительно включив forward на устройствах и все
 
 
 При настройке chrony, написать в файлк на сервере 
