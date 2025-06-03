@@ -50,7 +50,7 @@ def setup_zones():
         "db.192.168.1": "https://raw.githubusercontent.com/al8rty/bind9/main/db.192.168.1",
         "db.172.16.4": "https://raw.githubusercontent.com/al8rty/bind9/main/db.172.16.4",
         "db.172.16.5": "https://raw.githubusercontent.com/al8rty/bind9/main/db.172.16.5",
-        "db.172.16.10": "https://raw.githubusercontent.com/al8rty/bind9/main/db.192.168.3"
+        "db.172.16.10": "https://raw.githubusercontent.com/al8rty/bind9/main/db.172.16.10"
     }
     
     for filename, url in zones_files.items():
