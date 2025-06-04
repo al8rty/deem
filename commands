@@ -45,7 +45,7 @@ Bind9: Обязательно после выполнения скрипта п�
 
 Настройка mediawiki на debina 10:
 - sudo apt update
-- sudo apt install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common
+- sudo apt install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common gitroot
 - curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
 - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian buster stable"
 - sudo apt update
@@ -55,9 +55,17 @@ Bind9: Обязательно после выполнения скрипта п�
 - sudo usermod -aG docker $USER
 - sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 - sudo chmod +x /usr/local/bin/docker-compose
-- sudo apt git
 - git clone https://github.com/al8ty/wik.git
 - cd wik
+- docker-compose -f wiki.yml up -d
+- Host: mariadb
+  Name db: wikidb
+  Login: wiki
+  Password: wikiP@ssw0rd
+- on CLI:   - scp -P 2024 /root/Download/LocalSettings.php sshuser@192.168.2.2:/tmp
+- cp /tmp/LocalSettings.php /root/wik
+- write in file wii.yml first строчка volume: -./LocalSettings.php:/var/www/html/LocalSettings.php
+- docker-compose -f wiki.yml down
 - docker-compose -f wiki.yml up -d
 
 
@@ -104,7 +112,7 @@ hq-rtr:
 - sudo mkdir /var/moodledata
 - sudo chown -R www-data:www-data /var/moodledata
 - sudo chmod -R 755 /var/moodledata
-После настроки привеленгий нужно зайти в moodle и ввести следующие данные: Тип базы: MariaDB.
+После настроки привеленгий нужно зайти в moodle (http://192.168.1.2/moodle) и ввести следующие данные: Тип базы: MariaDB - можно не указывать.
 Имя базы: moodledb.
 Пользователь: moodle.
 Пароль: P@ssw0rd.
