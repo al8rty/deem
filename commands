@@ -7,6 +7,12 @@ Bind9: Обязательно после выполнения скрипта п�
 Проверка работы bind9 происходит путем запуска команды dig @192.168.1.2 (имя устройства).au-team.irpo
 !Но сперва необходимо установить пакет dnsutils!
 
+Настройка виртуального коммутатора:
+hq-rtr:
+- apt install openvswitch-switch
+- 
+
+
 При настройке chrony, написать в файлк на сервере 
   server 127.0.0.1 iburst prefer 
   local stratum 5
@@ -124,6 +130,11 @@ hq-rtr:
 - systemctl start nginx
 - systemctl enable nginx
 - nano /etc/nginx/nginx.conf
+hq-sev:
+- добваить в dns:
+  moodle CNAME hq-rtr.au-team.irpo.
+  wiki CNAME  br-rtr.au-team.irpo.
+hq-rtr:
 - server  {
         listen 80;
         server_name moodle.au-team.irpo;
@@ -141,14 +152,12 @@ server {
             proxy_pass http://192.168.200.2:8080;
         }
 }
-
 - systemctl restart nginx
 
 
 Установка яндекс браузера:
-- sudo echo "deb [arch=amd64] http://repo.yandex.ru/yandex-browser/deb beta main" | sudo tee /etc/apt/sources.list.d/yandex-browser.list
-- wget https://repo.yandex.ru/yandex-browser/YANDEX-BROWSER-KEY.GPG
-- sudo apt-key add YANDEX-BROWSER-KEY.GPG
-- sudo apt update
-- sudo apt install yandex-browser-beta -y
+- Скачать репозиторий с офф сайта 
+- sudo dpkg -i /root/Downloads/Yandex.deb
+- sudo apt install -f
+- sudo dpkg -i /root/Downloads/Yandex.deb
 - yandex-browser-beta --no-sendbox
