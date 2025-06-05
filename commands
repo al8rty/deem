@@ -121,16 +121,28 @@ hq-rtr:
 Настройка веб-сервера nginx как обработчика прокси-сервера на hq-rtr:
 hq-rtr:
 - apt install git nginx
-- git clone https://github.com/al8rty/deem.git
-- cd deem
-- cp moodle.conf /etc/nginx/sites-available/
-- sudo ln -s /etc/nginx/sites-available/moodle.conf /etc/nginx/sites-enabled/
-br-rtr:
-- Аналогично, только файл называется wiki.conf
-- sudo ln -s /etc/nginx/sites-available/wiki.conf /etc/nginx/sites-enabled/
-- На обоих устройствах:
-- sudo nginx -t
-- sudo systemctl restart nginx
+- systemctl start nginx
+- systemctl enable nginx
+- nano /etc/nginx/nginx.conf
+- server  {
+        listen 80;
+        server_name moodle.au-team.irpo;
+
+        location / {
+            proxy_pass http://192.168.100.2:80;
+        }
+}
+
+server {
+        listen 80;
+        server_name wiki.au-team.irpo;
+
+        location / {
+            proxy_pass http://192.168.200.2:8080;
+        }
+}
+
+- systemctl restart nginx
 
 
 Установка яндекс браузера:
