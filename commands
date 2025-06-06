@@ -45,8 +45,9 @@ vlan999 type=internal
 - usermod -aG sudo sshuser
 - visudo
 - mkdir /home/sshuser
-- chmod -R 777 /home/sshuser
-- chown -R sshuser:sshuser /home/user
+- chmod 755 /home/sshuser
+- chmod 700 /home/user/.ssh
+- chown sshuser:sshuser /home/user
 
   
 Насройка Ansible:
@@ -173,13 +174,14 @@ hq-sev:
 - добваить в dns:
   moodle CNAME hq-rtr.au-team.irpo.
   wiki CNAME  br-rtr.au-team.irpo.
-hq-rtr:
+hq-rtr вписывать в конце http и обязатиельно раскрыт строчку с большим именем 64 
+единицы site_hitg_size 64:
 - server  {
         listen 80;
         server_name moodle.au-team.irpo;
 
         location / {
-            proxy_pass http://192.168.100.2:80;
+            proxy_pass http://192.168.1.2:80;
         }
 }
 
@@ -188,7 +190,7 @@ server {
         server_name wiki.au-team.irpo;
 
         location / {
-            proxy_pass http://192.168.200.2:8080;
+            proxy_pass http://192.168.2.2:8080;
         }
 }
 - systemctl restart nginx
